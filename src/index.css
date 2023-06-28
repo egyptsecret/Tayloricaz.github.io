@@ -22,3 +22,11 @@ th,
 td {
   border: 1px solid;
 }
+
+input {
+  border-color: blueviolet;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  height: 5vh;
+  width: 50vh;
+}
