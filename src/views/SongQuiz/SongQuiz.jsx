@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import classes from "./SongQuiz.module.css";
 import { Loader } from "../../components/Loader";
-import { getLyrics } from "../../requests";
+import { getLyricsBySongNumber } from "../../requests";
 
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState({ lyrics: "no lyrics" });
@@ -10,7 +10,7 @@ export const SongQuiz = () => {
   const [wordsTable, setWordsTable] = useState();
 
   useEffect(() => {
-    getLyrics().then((res) =>
+    getLyricsBySongNumber(1).then((res) =>
       res
         .json()
         .then((songJson) => {
@@ -22,7 +22,7 @@ export const SongQuiz = () => {
               .filter(Boolean)
               .map((word) => (
                 <div className="border">
-                  <p className="invisible">{word}</p>
+                  <p className="invisible transition-all">{word}</p>
                 </div>
               ))
           );
