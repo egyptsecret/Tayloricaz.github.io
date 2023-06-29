@@ -9,12 +9,8 @@ export const HomePage = () => {
   const [randomSong, setRandomSong] = useState(1);
 
   useEffect(() => {
-    getAllSongs().then((res) =>
-      res
-        .json()
-        .then((arrayOfSongs) =>
-          setRandomSong(getRandomInt(arrayOfSongs.length))
-        )
+    getAllSongs().then((arrayOfSongs) =>
+      setRandomSong(getRandomInt(arrayOfSongs.length))
     );
   }, []);
   return (

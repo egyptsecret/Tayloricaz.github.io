@@ -2,65 +2,44 @@ import { useEffect, useState } from "react";
 import classes from "./SongQuiz.module.css";
 import { Loader } from "../../components/Loader";
 import { getLyricsBySongNumber } from "../../requests";
+import { formatLyricsForDisplay, isWordGuessed } from "../../functions";
+import { WordCell } from "./WordCell";
 
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState({ lyrics: "no lyrics" });
   const [wordGuess, setWordGuess] = useState("");
   const [isFetchingLyrics, setIsFetchingLyrics] = useState(true);
-  const [wordsTable, setWordsTable] = useState();
+  const [wordsTable, setWordsTable] = useState(
+    <WordCell key={1} word="no words" isVisible={false} />
+  );
 
   useEffect(() => {
-    getLyricsBySongNumber(1).then((res) =>
-      res
-        .json()
-        .then((songJson) => {
-          setSongInfo(songJson);
-          setWordsTable(
-            songJson.lyrics
-              .replace(/\n/g, " ")
-              .split(" ")
-              .filter(Boolean)
-              .map((word) => (
-                <div className="border">
-                  <p className="invisible transition-all">{word}</p>
-                </div>
-              ))
-          );
-          setIsFetchingLyrics(false);
-        })
-        .catch(console.log)
-    );
+    getLyricsBySongNumber(1).then((songJson) => {
+      setSongInfo(songJson);
+      setWordsTable(
+        formatLyricsForDisplay(songJson.lyrics).map((word, index) => (
+          <WordCell key={index} word={word} isVisible={false} />
+        ))
+      );
+      setIsFetchingLyrics(false);
+    });
   }, []);
 
-  const updateWordDisplay = (event) => {
-    setWordGuess(event.target.value);
-  };
+  const updateWordDisplay = (event) => setWordGuess(event.target.value);
 
   useEffect(() => {
     !isFetchingLyrics &&
-      setWordsTable((prevValue) =>
-        prevValue.map((word) => {
-          if (
-            word.props.children.props.className !== "visible" &&
-            wordGuess
-              .toLocaleLowerCase()
-              .startsWith(
-                word.props.children.props.children
-                  .toLocaleLowerCase()
-                  .replace(/[^a-zA-Z0-9 ]/g, "")
-              )
-          ) {
+      setWordsTable((prevValue) => {
+        console.log(prevValue);
+        return prevValue.map((wordCell, index) => {
+          if (!wordCell.props.isVisible && isWordGuessed(wordGuess, wordCell)) {
             setWordGuess("");
-            return (
-              <div className="border color-green">
-                <p className="visible">{word.props.children.props.children}</p>
-              </div>
-            );
+            return <WordCell key={index} word={wordCell} isVisible={true} />;
           } else {
-            return word;
+            return wordCell;
           }
-        })
-      );
+        });
+      });
   }, [wordGuess, songInfo.lyrics]);
 
   return (
@@ -77,11 +56,9 @@ export const SongQuiz = () => {
           <Loader />
         </div>
       )}
-      {songInfo.lyrics && (
-        <div className="border-green h-4/6 flex-col flex flex-wrap justify-start items-stretch content-center">
-          {wordsTable}
-        </div>
-      )}
+      <div className="border-green h-4/6 flex-col flex flex-wrap justify-start items-stretch content-center">
+        {wordsTable}
+      </div>
     </div>
   );
 };
