@@ -3,13 +3,18 @@ import { SiteBanner } from "../../components/SiteBanner";
 import classes from "./HomePage.module.css";
 import { useEffect, useState } from "react";
 import { getAllSongs } from "../../requests";
+import { getRandomInt } from "../../functions";
 
 export const HomePage = () => {
   const [randomSong, setRandomSong] = useState(1);
 
   useEffect(() => {
     getAllSongs().then((res) =>
-      res.json().then((arrayOfSongs) => setRandomSong(arrayOfSongs.length))
+      res
+        .json()
+        .then((arrayOfSongs) =>
+          setRandomSong(getRandomInt(arrayOfSongs.length))
+        )
     );
   }, []);
   return (
