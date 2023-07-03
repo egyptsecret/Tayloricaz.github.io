@@ -1,46 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import classes from "./SongQuiz.module.css";
 import { Loader } from "../../components/Loader";
 import { getLyricsBySongNumber } from "../../requests";
-import { formatLyricsForDisplay, isWordGuessed } from "../../functions";
+import {
+  formatLyricsForDisplay,
+  isWordGuessed,
+  mapIndexed,
+} from "../../functions";
 import { WordCell } from "./WordCell";
+import { map } from "lodash/fp";
+import { useParams } from "react-router";
 
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState({ lyrics: "no lyrics" });
   const [wordGuess, setWordGuess] = useState("");
   const [isFetchingLyrics, setIsFetchingLyrics] = useState(true);
-  const [wordsTable, setWordsTable] = useState(
-    <WordCell key={1} word="no words" isVisible={false} />
+  const [lyricsProps, setLyricsProps] = useState(
+    formatLyricsForDisplay(songInfo.lyrics)
   );
+  const { songNum } = useParams();
 
   useEffect(() => {
-    getLyricsBySongNumber(1).then((songJson) => {
+    getLyricsBySongNumber(songNum).then((songJson) => {
       setSongInfo(songJson);
-      setWordsTable(
-        formatLyricsForDisplay(songJson.lyrics).map((word, index) => (
-          <WordCell key={index} word={word} isVisible={false} />
-        ))
-      );
+      setLyricsProps(formatLyricsForDisplay(songJson.lyrics));
       setIsFetchingLyrics(false);
     });
-  }, []);
+  }, [songNum]);
 
   const updateWordDisplay = (event) => setWordGuess(event.target.value);
-
+  const wordsTable = useMemo(
+    () =>
+      mapIndexed(
+        (lyricProps, index) => <WordCell key={index} {...lyricProps} />,
+        lyricsProps
+      ),
+    [lyricsProps]
+  );
   useEffect(() => {
     !isFetchingLyrics &&
-      setWordsTable((prevValue) => {
-        console.log(prevValue);
-        return prevValue.map((wordCell, index) => {
-          if (!wordCell.props.isVisible && isWordGuessed(wordGuess, wordCell)) {
+      setLyricsProps((prevValue) =>
+        map(({ word, isVisible }) => {
+          if (!isVisible && isWordGuessed(wordGuess, word)) {
             setWordGuess("");
-            return <WordCell key={index} word={wordCell} isVisible={true} />;
+            return { word, isVisible: true };
           } else {
-            return wordCell;
+            return { word, isVisible };
           }
-        });
-      });
-  }, [wordGuess, songInfo.lyrics]);
+        }, prevValue)
+      );
+  }, [wordGuess, songInfo.lyrics, isFetchingLyrics]);
 
   return (
     <div className={classes.App}>
@@ -56,9 +65,11 @@ export const SongQuiz = () => {
           <Loader />
         </div>
       )}
-      <div className="border-green h-4/6 flex-col flex flex-wrap justify-start items-stretch content-center">
-        {wordsTable}
-      </div>
+      {songInfo.lyrics && (
+        <div className="border-green h-4/6 flex-col flex flex-wrap justify-start items-stretch content-center">
+          {wordsTable}
+        </div>
+      )}
     </div>
   );
 };

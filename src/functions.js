@@ -1,4 +1,12 @@
-import { pipe, filter, replace, split, toLower, startsWith } from "lodash/fp";
+import {
+  pipe,
+  filter,
+  replace,
+  split,
+  toLower,
+  startsWith,
+  map,
+} from "lodash/fp";
 
 export const formatLyrics = (str) => str.replace(/[^a-zA-Z0-9 ]/g, "");
 export const getRandomInt = (max) => {
@@ -10,10 +18,19 @@ export const getJsonFromResponse = async (req) => (await req).json();
 export const formatLyricsForDisplay = pipe(
   replace(/\n/g, " "),
   split(" "),
-  filter(Boolean)
+  filter(Boolean),
+  map((word) => ({ word, isVisible: false }))
 );
+
+export const formatWord = pipe(toLower, replace(/[^a-zA-Z0-9 ]/g, ""));
+
 export const isWordGuessed = (guess, currWord) =>
-  pipe(
-    toLower,
-    startsWith(pipe(toLower(), replace(/[^a-zA-Z0-9 ]/g, ""))(currWord))
-  )(guess);
+  pipe(toLower, startsWith(formatWord(currWord)))(guess);
+
+export const mapIndexed = map.convert({
+  cap: false,
+  curry: true,
+  immutable: true,
+  fixed: true,
+  rearg: true,
+});

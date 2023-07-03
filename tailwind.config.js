@@ -17,6 +17,21 @@ module.exports = {
 
         // Complex site-specific row configuration
         layout: "200px minmax(900px, 1fr) 100px",
+        animation: {
+          appear: "show 4s ease-in forwards",
+        },
+        keyframes: {
+          show: {
+            "0%": { opacity: "0", color: "green" },
+            "70%": { color: "green" },
+            "100%": { opacity: "1", color: "green" },
+          },
+        },
+        transitionProperty: {
+          height: "height",
+          spacing: "margin, padding",
+          visibility: "visibility",
+        },
       },
     },
   },
