@@ -20,6 +20,9 @@ module.exports = {
         animation: {
           appear: "show 4s ease-in forwards",
         },
+        maxWidth: {
+          xxs: "10rem",
+        },
         keyframes: {
           show: {
             "0%": { opacity: "0", color: "green" },
