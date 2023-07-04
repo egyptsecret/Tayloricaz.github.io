@@ -10,7 +10,7 @@ import {
 import { WordCell } from "./WordCell";
 import { map } from "lodash/fp";
 import { useParams } from "react-router";
-
+import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState({ lyrics: "no lyrics" });
   const [wordGuess, setWordGuess] = useState("");
@@ -56,7 +56,7 @@ export const SongQuiz = () => {
       <input
         onChange={updateWordDisplay}
         value={wordGuess}
-        className="border"
+        className="bg-gray-50 border border-gray-300 rounded disabled:opacity-75 p-4 focus:ring-violet-300"
         type="text"
         placeholder="put a word in bitch!"
       ></input>
@@ -66,10 +66,13 @@ export const SongQuiz = () => {
         </div>
       )}
       {songInfo.lyrics && (
-        <div className="border-green h-4/6 flex-col flex flex-wrap justify-start items-stretch content-center">
+        <div className="h-4/6 flex-col flex flex-wrap justify-start items-stretch content-center">
           {wordsTable}
         </div>
       )}
+      <div className="fixed bottom-0 right-0 h-24">
+        <img className="h-24" src={taylorHoldingCats} alt="taylor-with-cats" />
+      </div>
     </div>
   );
 };
