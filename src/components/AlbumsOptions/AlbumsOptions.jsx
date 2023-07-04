@@ -31,30 +31,29 @@ export const AlbumsOptions = () => {
   ];
 
   return (
-    <div className="flex max-w-full items-center gap-5 ">
-      {map(
-        ({ img, albumNum }) => (
-          <Link
-            to={``}
-            onClick={() =>
-              getAllSongsInAlbum(albumNum).then((res) => {
-                const songArray = map(prop("song_id"), res);
-                navigate(
-                  `songquiz/${songArray[getRandomInt(songArray.length)]}`
-                );
-              })
-            }
-          >
+    <div className="flex flex-col items-center gap-6">
+      <div className="text-2xl">choose a random song from an album</div>
+      <div className="flex max-w-full items-center gap-5 ">
+        {map(
+          ({ img, albumNum }) => (
             <img
               className={"max-w-[10rem] cursor-pointer hover:scale-105"}
               src={img}
               key={albumNum}
               alt="speakNow"
+              onClick={() =>
+                getAllSongsInAlbum(albumNum).then((res) => {
+                  const songArray = map(prop("song_id"), res);
+                  navigate(
+                    `songquiz/${songArray[getRandomInt(songArray.length)]}`
+                  );
+                })
+              }
             />
-          </Link>
-        ),
-        albumsArray
-      )}
+          ),
+          albumsArray
+        )}
+      </div>
     </div>
   );
 };
