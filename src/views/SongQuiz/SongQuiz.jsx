@@ -8,7 +8,7 @@ import {
   mapIndexed,
 } from "../../functions";
 import { WordCell } from "./WordCell";
-import { map } from "lodash/fp";
+import { filter, map, prop } from "lodash/fp";
 import { useParams } from "react-router";
 import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 import catFeet from "../../assets/images/catFeet.png";
@@ -59,20 +59,22 @@ export const SongQuiz = () => {
       <input
         onChange={updateWordDisplay}
         value={wordGuess}
-        className="bg-gray-50 border border-gray-300 rounded disabled:opacity-75 p-4s focus:ring-violet-300"
+        className="bg-gray-50 border border-gray-300 rounded disabled:opacity-75 p-4 focus:ring-violet-300"
         type="text"
         placeholder="put a word in bitch!"
       ></input>
+      <div className="font-playfair">
+        you guessed {filter(prop("isVisible"), lyricsProps).length || 0} lyrics
+        out of {lyricsProps.length}
+      </div>
       {isFetchingLyrics && (
         <div className="fixed top-56">
           <Loader />
         </div>
       )}
-      {songInfo.lyrics && (
-        <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
-          {wordsTable}
-        </div>
-      )}
+      <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
+        {wordsTable}
+      </div>
       <div className="fixed bottom-0 right-0 h-24">
         <img className="h-24" src={taylorHoldingCats} alt="taylor-with-cats" />
       </div>
