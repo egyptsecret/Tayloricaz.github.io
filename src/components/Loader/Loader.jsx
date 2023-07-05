@@ -1,5 +1,8 @@
-import classes from './Loader.module.css'
-
 export const Loader = () => {
-    return <div className={classes.ldsGrid}><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-}
+  return (
+    <img
+      src="https://gifdb.com/images/high/taylor-swift-confused-look-iyu6opiu9azfgo9h.gif"
+      alt="taylor side eye"
+    />
+  );
+};

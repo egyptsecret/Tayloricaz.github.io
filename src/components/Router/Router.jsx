@@ -6,7 +6,7 @@ export const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/songquiz/:songNum" element={<SongQuiz />} />
+      <Route path="/songquiz" element={<SongQuiz />} />
     </Routes>
   );
 };

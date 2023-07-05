@@ -9,8 +9,7 @@ import fearless from "../../assets/images/fearless.png";
 import debut from "../../assets/images/debut.png";
 import folklore from "../../assets/images/folklore.png";
 import { map, prop } from "lodash/fp";
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAllSongsInAlbum } from "../../requests";
 import { getRandomInt } from "../../functions";
 

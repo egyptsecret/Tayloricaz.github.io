@@ -4,14 +4,16 @@ import { Loader } from "../../components/Loader";
 import { getLyricsBySongNumber } from "../../requests";
 import {
   formatLyricsForDisplay,
+  getRandomInt,
   isWordGuessed,
   mapIndexed,
 } from "../../functions";
 import { WordCell } from "./WordCell";
 import { filter, map, prop } from "lodash/fp";
-import { useParams } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 import catFeet from "../../assets/images/catFeet.png";
+import { PurpleButton } from "../../components/PurpleButton";
 
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState({ lyrics: "no lyrics" });
@@ -20,15 +22,18 @@ export const SongQuiz = () => {
   const [lyricsProps, setLyricsProps] = useState(
     formatLyricsForDisplay(songInfo.lyrics)
   );
-  const { songNum } = useParams();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const lyricsGuessed = filter(prop("isVisible"), lyricsProps).length;
 
   useEffect(() => {
-    getLyricsBySongNumber(songNum).then((songJson) => {
-      setSongInfo(songJson);
-      setLyricsProps(formatLyricsForDisplay(songJson.lyrics));
-      setIsFetchingLyrics(false);
-    });
-  }, [songNum]);
+    state &&
+      getLyricsBySongNumber(state.songNum).then((songJson) => {
+        setSongInfo(songJson);
+        setLyricsProps(formatLyricsForDisplay(songJson.lyrics));
+        setIsFetchingLyrics(false);
+      });
+  }, [state]);
 
   const updateWordDisplay = (event) => setWordGuess(event.target.value);
   const wordsTable = useMemo(
@@ -53,6 +58,14 @@ export const SongQuiz = () => {
       );
   }, [wordGuess, songInfo.lyrics, isFetchingLyrics]);
 
+  const regenerateSong = () =>
+    navigate(`/songquiz`, {
+      state: {
+        songNum: getRandomInt(state.numOfSongs),
+        numOfSongs: state.numOfSongs,
+      },
+    });
+
   return (
     <div className={classes.App}>
       <img className="fixed top-0 left-0 w-16" src={catFeet} alt="catFeet" />
@@ -64,19 +77,26 @@ export const SongQuiz = () => {
         placeholder="put a word in bitch!"
       ></input>
       <div className="font-playfair">
-        you guessed {filter(prop("isVisible"), lyricsProps).length || 0} lyrics
-        out of {lyricsProps.length}
+        you guessed {lyricsGuessed} lyrics out of {lyricsProps.length}
       </div>
       {isFetchingLyrics && (
         <div className="fixed top-56">
           <Loader />
         </div>
       )}
-      <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
-        {wordsTable}
-      </div>
-      <div className="fixed bottom-0 right-0 h-24">
-        <img className="h-24" src={taylorHoldingCats} alt="taylor-with-cats" />
+      {lyricsGuessed !== lyricsProps.length ? (
+        <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
+          {wordsTable}
+        </div>
+      ) : (
+        <img
+          src="https://gifdb.com/images/high/taylor-swift-happy-dance-0sukpoogfw30zukw.gif"
+          alt="taylor dance"
+        />
+      )}
+      <div className="fixed bottom-0 right-0 flex items-center">
+        <PurpleButton onClick={regenerateSong}>regenerate song</PurpleButton>
+        <img className="h-24 " src={taylorHoldingCats} alt="taylor-with-cats" />
       </div>
     </div>
   );
