@@ -15,6 +15,7 @@ import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 import catFeet from "../../assets/images/catFeet.png";
 import { PurpleButton } from "../../components/PurpleButton";
 import { ErrorInFetchingSong } from "../../components/ErrorInFetchingSong";
+import { Timer } from "../../components/Timer";
 
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState();
@@ -65,7 +66,10 @@ export const SongQuiz = () => {
         numOfSongs: state.numOfSongs,
       },
     });
-
+  const lose = () => {
+    setGaveUp(true);
+    setLyricsProps(map(set("isVisible", true)));
+  };
   return (
     <div className={classes.App}>
       <img className="fixed top-0 left-0 w-16" src={catFeet} alt="catFeet" />
@@ -76,7 +80,6 @@ export const SongQuiz = () => {
         type="text"
         placeholder="put a word in bitch!"
       ></input>
-
       {isFetchingLyrics && (
         <div className="fixed top-56">
           <Loader />
@@ -85,20 +88,16 @@ export const SongQuiz = () => {
       {lyricsProps?.length ? (
         !gaveUp || lyricsGuessed !== lyricsProps?.length || gaveUp ? (
           <>
-            <div className="font-playfair">
-              you guessed {lyricsGuessed} lyrics out of {lyricsProps?.length}
-            </div>
+            <Timer onTimeEnd={lose} />
+            {!gaveUp && (
+              <div className="font-playfair">
+                you guessed {lyricsGuessed} lyrics out of {lyricsProps?.length}
+              </div>
+            )}
             <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
               {wordsTable}
             </div>
-            <button
-              onClick={() => {
-                setGaveUp(true);
-                setLyricsProps(map(set("isVisible", true)));
-              }}
-            >
-              give up? :(
-            </button>
+            <button onClick={lose}>give up? :(</button>
           </>
         ) : (
           <div>
@@ -110,7 +109,7 @@ export const SongQuiz = () => {
           </div>
         )
       ) : (
-        <ErrorInFetchingSong />
+        !isFetchingLyrics && <ErrorInFetchingSong />
       )}
       <div className="fixed bottom-0 right-0 flex items-center">
         <PurpleButton onClick={regenerateSong}>regenerate song</PurpleButton>
