@@ -43,9 +43,11 @@ export const AlbumsOptions = () => {
               onClick={() =>
                 getAllSongsInAlbum(albumNum).then((res) => {
                   const songArray = map(prop("song_id"), res);
-                  navigate(
-                    `songquiz/${songArray[getRandomInt(songArray.length)]}`
-                  );
+                  navigate(`songquiz`, {
+                    state: {
+                      songNum: songArray[getRandomInt(songArray.length)],
+                    },
+                  });
                 })
               }
             />

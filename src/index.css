@@ -2,29 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica:ital@0;1&family=Playfair+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica:ital@0;1&family=Outfit:wght@500&family=Playfair+Display&display=swap');
 body {
   margin: 0;
 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-*{
+* {
   font-family: IM Fell DW Pica, serif;
 }
 
 .font-playfair {
-  font-family: Playfair, serif;
+  font-family: Playfair Display, serif;
 }
+
+.red-tv-font {
+font-family: Outfit, sans-serif;}
 
 table,
 th,
@@ -40,8 +43,23 @@ input {
   width: 50vh;
 }
 
-p{
+p {
   transition-property: all;
-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.animate-appear {
+  animation: show 1s forwards;
+}
+
+@keyframes show {
+  from {
+    opacity: 0.5;
+    color: green;
+    background-color: rgba(189, 255, 189, 0.616);
+  }
+  to {
+    opacity: 1;
+  }
 }

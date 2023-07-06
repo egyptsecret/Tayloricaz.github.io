@@ -17,9 +17,6 @@ module.exports = {
 
         // Complex site-specific row configuration
         layout: "200px minmax(900px, 1fr) 100px",
-        animation: {
-          appear: "show 4s ease-in forwards",
-        },
         maxWidth: {
           xxs: "10rem",
         },
@@ -29,6 +26,9 @@ module.exports = {
             "70%": { color: "green" },
             "100%": { opacity: "1", color: "green" },
           },
+        },
+        animation: {
+          appeared: "show 1s ease-in-out infinite",
         },
         transitionProperty: {
           height: "height",

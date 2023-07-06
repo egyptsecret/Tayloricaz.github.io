@@ -9,22 +9,22 @@ import {
   mapIndexed,
 } from "../../functions";
 import { WordCell } from "./WordCell";
-import { filter, map, prop } from "lodash/fp";
+import { filter, map, prop, set } from "lodash/fp";
 import { useLocation, useNavigate } from "react-router";
 import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 import catFeet from "../../assets/images/catFeet.png";
 import { PurpleButton } from "../../components/PurpleButton";
+import { ErrorInFetchingSong } from "../../components/ErrorInFetchingSong";
 
 export const SongQuiz = () => {
-  const [songInfo, setSongInfo] = useState({ lyrics: "no lyrics" });
+  const [songInfo, setSongInfo] = useState();
   const [wordGuess, setWordGuess] = useState("");
   const [isFetchingLyrics, setIsFetchingLyrics] = useState(true);
-  const [lyricsProps, setLyricsProps] = useState(
-    formatLyricsForDisplay(songInfo.lyrics)
-  );
+  const [lyricsProps, setLyricsProps] = useState();
+  const [gaveUp, setGaveUp] = useState(false);
   const navigate = useNavigate();
   const { state } = useLocation();
-  const lyricsGuessed = filter(prop("isVisible"), lyricsProps).length;
+  const lyricsGuessed = filter(prop("isVisible"), lyricsProps)?.length;
 
   useEffect(() => {
     state &&
@@ -56,7 +56,7 @@ export const SongQuiz = () => {
           }
         }, prevValue)
       );
-  }, [wordGuess, songInfo.lyrics, isFetchingLyrics]);
+  }, [wordGuess, songInfo, isFetchingLyrics]);
 
   const regenerateSong = () =>
     navigate(`/songquiz`, {
@@ -76,23 +76,41 @@ export const SongQuiz = () => {
         type="text"
         placeholder="put a word in bitch!"
       ></input>
-      <div className="font-playfair">
-        you guessed {lyricsGuessed} lyrics out of {lyricsProps.length}
-      </div>
+
       {isFetchingLyrics && (
         <div className="fixed top-56">
           <Loader />
         </div>
       )}
-      {lyricsGuessed !== lyricsProps.length ? (
-        <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
-          {wordsTable}
-        </div>
+      {lyricsProps?.length ? (
+        !gaveUp || lyricsGuessed !== lyricsProps?.length || gaveUp ? (
+          <>
+            <div className="font-playfair">
+              you guessed {lyricsGuessed} lyrics out of {lyricsProps?.length}
+            </div>
+            <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
+              {wordsTable}
+            </div>
+            <button
+              onClick={() => {
+                setGaveUp(true);
+                setLyricsProps(map(set("isVisible", true)));
+              }}
+            >
+              give up? :(
+            </button>
+          </>
+        ) : (
+          <div>
+            YOU WON
+            <img
+              src="https://gifdb.com/images/high/taylor-swift-happy-dance-0sukpoogfw30zukw.gif"
+              alt="taylor dance"
+            />
+          </div>
+        )
       ) : (
-        <img
-          src="https://gifdb.com/images/high/taylor-swift-happy-dance-0sukpoogfw30zukw.gif"
-          alt="taylor dance"
-        />
+        <ErrorInFetchingSong />
       )}
       <div className="fixed bottom-0 right-0 flex items-center">
         <PurpleButton onClick={regenerateSong}>regenerate song</PurpleButton>
