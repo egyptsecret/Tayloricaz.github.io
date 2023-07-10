@@ -15,7 +15,7 @@ export const HomePage = () => {
   return (
     <div className={classes.allErasImg}>
       <SiteBanner />
-      <AlbumsOptions />
+      <AlbumsOptions numOfSongs={arrayOfSongs.length} />
       <Link
         to={`/songquiz`}
         state={{

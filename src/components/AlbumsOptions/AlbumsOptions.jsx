@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllSongsInAlbum } from "../../requests";
 import { getRandomInt } from "../../functions";
 
-export const AlbumsOptions = () => {
+export const AlbumsOptions = ({ numOfSongs }) => {
   const navigate = useNavigate();
 
   const albumsArray = [
@@ -46,6 +46,7 @@ export const AlbumsOptions = () => {
                   navigate(`songquiz`, {
                     state: {
                       songNum: songArray[getRandomInt(songArray.length)],
+                      numOfSongs,
                     },
                   });
                 })

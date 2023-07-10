@@ -88,11 +88,16 @@ export const SongQuiz = () => {
       {lyricsProps?.length ? (
         !gaveUp || lyricsGuessed !== lyricsProps?.length || gaveUp ? (
           <>
-            <Timer onTimeEnd={lose} />
             {!gaveUp && (
-              <div className="font-playfair">
-                you guessed {lyricsGuessed} lyrics out of {lyricsProps?.length}
-              </div>
+              <>
+                <div className="self-start w-2/4">
+                  <Timer onTimeEnd={lose} />
+                </div>
+                <div className="font-playfair">
+                  you guessed {lyricsGuessed} lyrics out of{" "}
+                  {lyricsProps?.length}
+                </div>
+              </>
             )}
             <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
               {wordsTable}
