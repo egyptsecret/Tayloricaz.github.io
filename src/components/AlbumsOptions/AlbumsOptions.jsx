@@ -36,7 +36,7 @@ export const AlbumsOptions = ({ numOfSongs }) => {
         {map(
           ({ img, albumNum }) => (
             <img
-              className={"max-w-[10rem] cursor-pointer hover:scale-105"}
+              className={"max-w-[10rem] w-1/12 cursor-pointer hover:scale-105"}
               src={img}
               key={albumNum}
               alt="speakNow"

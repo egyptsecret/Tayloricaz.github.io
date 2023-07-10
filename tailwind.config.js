@@ -30,6 +30,9 @@ module.exports = {
         animation: {
           appeared: "show 1s ease-in-out infinite",
         },
+        height: {
+          "40vh": "40vh",
+        },
         transitionProperty: {
           height: "height",
           spacing: "margin, padding",
