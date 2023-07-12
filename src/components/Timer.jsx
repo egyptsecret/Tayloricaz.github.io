@@ -1,17 +1,17 @@
 import { toString } from "lodash/fp";
 import { useEffect, useRef, useState } from "react";
 
-export const Timer = ({ startTrigger, onTimeEnd }) => {
-  const [num, setNum] = useState(900);
+export const Timer = ({ stopTimer, restartTimer }) => {
+  const [num, setNum] = useState(0);
   const [pause, setPause] = useState(false);
   const intervalRef = useRef();
 
-  const decreaseNum = () => {
-    setNum((prev) => prev - 1);
+  const increaseNum = () => {
+    setNum((prev) => prev + 1);
   };
 
   useEffect(() => {
-    intervalRef.current = setInterval(decreaseNum, 1000);
+    intervalRef.current = setInterval(increaseNum, 1000);
 
     return () => clearInterval(intervalRef.current);
   }, []);
@@ -19,7 +19,7 @@ export const Timer = ({ startTrigger, onTimeEnd }) => {
   const handleClick = () => {
     !pause
       ? clearInterval(intervalRef.current)
-      : (intervalRef.current = setInterval(decreaseNum, 1000));
+      : (intervalRef.current = setInterval(increaseNum, 1000));
 
     setPause((prev) => !prev);
   };
@@ -28,21 +28,21 @@ export const Timer = ({ startTrigger, onTimeEnd }) => {
   const secs = num % 60 | 0;
 
   useEffect(() => {
-    if (num === 0) {
-      onTimeEnd();
+    if (stopTimer) {
       setPause(true);
       clearInterval(intervalRef.current);
     }
-  }, [num]);
+  }, [stopTimer]);
 
+  useEffect(() => {
+    setNum(0);
+  }, [restartTimer]);
   return (
     <div>
       <div className="red-tv-font">
         {mins} : {toString(secs).length < 2 ? "0" + secs : secs}
       </div>
-      {num > 0 && (
-        <button onClick={handleClick}>{pause ? "Run" : "Pause"}</button>
-      )}
+      <button onClick={handleClick}>{pause ? "Resume" : "Pause"}</button>
     </div>
   );
 };
