@@ -19,6 +19,7 @@ module.exports = {
         layout: "200px minmax(900px, 1fr) 100px",
         maxWidth: {
           xxs: "10rem",
+          screen: "100vw",
         },
         keyframes: {
           show: {
