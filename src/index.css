@@ -38,9 +38,12 @@ td {
 input {
   border-color: blueviolet;
   margin-top: 50px;
-  margin-bottom: 100px;
   height: 5vh;
   width: 50vh;
+}
+
+.pop-shadow{
+  box-shadow: 1px 2px rgb(209, 208, 208);
 }
 
 p {
@@ -49,8 +52,23 @@ p {
   transition-duration: 150ms;
 }
 
+.animate-appear-lose {
+  animation: showLoser 1s forwards;
+}
+
 .animate-appear {
   animation: show 1s forwards;
+}
+
+@keyframes showLoser { 
+  from {
+    opacity: 0.5;
+    color: red;
+  }
+  to {
+    opacity: 1;
+    background-color: rgba(255, 145, 145, 0.616);
+  }
 }
 
 @keyframes show {

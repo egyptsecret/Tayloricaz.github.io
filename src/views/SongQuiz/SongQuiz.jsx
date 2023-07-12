@@ -9,12 +9,13 @@ import {
   mapIndexed,
 } from "../../functions";
 import { WordCell } from "./WordCell";
-import { filter, map, prop, set } from "lodash/fp";
+import { filter, map, overSome, prop, some } from "lodash/fp";
 import { useLocation, useNavigate } from "react-router";
 import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 import catFeet from "../../assets/images/catFeet.png";
 import { PurpleButton } from "../../components/PurpleButton";
 import { ErrorInFetchingSong } from "../../components/ErrorInFetchingSong";
+import { Timer } from "../../components/Timer";
 
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState();
@@ -22,9 +23,13 @@ export const SongQuiz = () => {
   const [isFetchingLyrics, setIsFetchingLyrics] = useState(true);
   const [lyricsProps, setLyricsProps] = useState();
   const [gaveUp, setGaveUp] = useState(false);
+  const [restartTimer, setRestartTimer] = useState(false);
   const navigate = useNavigate();
   const { state } = useLocation();
-  const lyricsGuessed = filter(prop("isVisible"), lyricsProps)?.length;
+  const lyricsGuessed = filter(
+    overSome(prop("isVisible"), !prop("losingWord")),
+    lyricsProps
+  )?.length;
 
   useEffect(() => {
     state &&
@@ -47,25 +52,36 @@ export const SongQuiz = () => {
   useEffect(() => {
     !isFetchingLyrics &&
       setLyricsProps((prevValue) =>
-        map(({ word, isVisible }) => {
+        map(({ word, isVisible, losingWord }) => {
           if (!isVisible && isWordGuessed(wordGuess, word)) {
             setWordGuess("");
-            return { word, isVisible: true };
+            return { word, isVisible: true, losingWord };
           } else {
-            return { word, isVisible };
+            return { word, isVisible, losingWord };
           }
         }, prevValue)
       );
   }, [wordGuess, songInfo, isFetchingLyrics]);
 
-  const regenerateSong = () =>
+  const regenerateSong = () => {
+    setRestartTimer((prevValue) => !prevValue);
     navigate(`/songquiz`, {
       state: {
         songNum: getRandomInt(state.numOfSongs),
         numOfSongs: state.numOfSongs,
       },
     });
-
+  };
+  const lose = () => {
+    setGaveUp(true);
+    setLyricsProps(
+      map((wordProps) =>
+        !wordProps.isVisible
+          ? { ...wordProps, losingWord: true }
+          : { ...wordProps }
+      )
+    );
+  };
   return (
     <div className={classes.App}>
       <img className="fixed top-0 left-0 w-16" src={catFeet} alt="catFeet" />
@@ -76,29 +92,27 @@ export const SongQuiz = () => {
         type="text"
         placeholder="put a word in bitch!"
       ></input>
-
       {isFetchingLyrics && (
         <div className="fixed top-56">
           <Loader />
         </div>
       )}
       {lyricsProps?.length ? (
-        !gaveUp || lyricsGuessed !== lyricsProps?.length || gaveUp ? (
+        lyricsGuessed !== lyricsProps?.length || gaveUp ? (
           <>
+            <div className="self-start w-2/4">
+              <Timer
+                stopTimer={gaveUp || lyricsGuessed === lyricsProps?.length}
+                restartTimer={restartTimer}
+              />
+            </div>
             <div className="font-playfair">
               you guessed {lyricsGuessed} lyrics out of {lyricsProps?.length}
             </div>
             <div className="h-4/6 flex-col flex flex-wrap gap-x-3 justify-start items-stretch content-center">
               {wordsTable}
             </div>
-            <button
-              onClick={() => {
-                setGaveUp(true);
-                setLyricsProps(map(set("isVisible", true)));
-              }}
-            >
-              give up? :(
-            </button>
+            <button onClick={lose}>give up? :(</button>
           </>
         ) : (
           <div>
@@ -110,7 +124,7 @@ export const SongQuiz = () => {
           </div>
         )
       ) : (
-        <ErrorInFetchingSong />
+        !isFetchingLyrics && <ErrorInFetchingSong />
       )}
       <div className="fixed bottom-0 right-0 flex items-center">
         <PurpleButton onClick={regenerateSong}>regenerate song</PurpleButton>
