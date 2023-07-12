@@ -9,7 +9,7 @@ import {
   mapIndexed,
 } from "../../functions";
 import { WordCell } from "./WordCell";
-import { filter, map, overSome, prop, some } from "lodash/fp";
+import { filter, map, overSome, prop } from "lodash/fp";
 import { useLocation, useNavigate } from "react-router";
 import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 import catFeet from "../../assets/images/catFeet.png";
