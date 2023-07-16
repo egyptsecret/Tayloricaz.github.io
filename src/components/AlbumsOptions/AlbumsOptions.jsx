@@ -38,7 +38,7 @@ export const AlbumsOptions = ({ numOfSongs }) => {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="text-2xl">choose a random song from an album</div>
+      <div className="text-2xl">choose a song or an album</div>
       <div className="flex max-w-full items-baseline gap-5 ">
         {map(
           ({ img, albumNum }) => (
