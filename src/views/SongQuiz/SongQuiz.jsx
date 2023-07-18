@@ -12,10 +12,11 @@ import { WordCell } from "./WordCell";
 import { filter, map, overSome, prop } from "lodash/fp";
 import { useLocation, useNavigate } from "react-router";
 import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
-import catFeet from "../../assets/images/catFeet.png";
+import loverHouse from "../../assets/images/loverHouse.jpg";
 import { PurpleButton } from "../../components/PurpleButton";
 import { ErrorInFetchingSong } from "../../components/ErrorInFetchingSong";
 import { Timer } from "../../components/Timer";
+import { Link } from "react-router-dom";
 
 export const SongQuiz = () => {
   const [songInfo, setSongInfo] = useState();
@@ -84,7 +85,13 @@ export const SongQuiz = () => {
   };
   return (
     <div className={classes.App}>
-      <img className="fixed top-0 left-0 w-16" src={catFeet} alt="catFeet" />
+      <Link to="/">
+        <img
+          className="fixed top-1 left-1 w-16"
+          src={loverHouse}
+          alt="lover house"
+        />
+      </Link>
       <input
         onChange={updateWordDisplay}
         value={wordGuess}
