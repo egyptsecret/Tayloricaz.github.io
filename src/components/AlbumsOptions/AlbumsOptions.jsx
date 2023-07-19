@@ -27,6 +27,7 @@ export const AlbumsOptions = ({ numOfSongs }) => {
         navigate(`songquiz`, {
           state: {
             songNum: song_id,
+            albumId: album_id,
           },
         })
       }
