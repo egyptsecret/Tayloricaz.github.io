@@ -83,6 +83,7 @@ export const SongQuiz = () => {
       )
     );
   };
+
   return (
     <div className={classes.App}>
       <Link to="/">

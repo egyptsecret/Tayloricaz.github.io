@@ -12,7 +12,7 @@ export const AlbumsOptions = ({ numOfSongs }) => {
   useEffect(() => {
     Promise.all(
       map(
-        ({ albumNum, img }) =>
+        ({ albumNum }) =>
           getAllSongsInAlbum(albumNum).then((res) =>
             setAlbumOption((preVal) => [...preVal, [res]])
           ),
@@ -23,11 +23,13 @@ export const AlbumsOptions = ({ numOfSongs }) => {
 
   const AlbumSongOption = ({ song_id, title, album_id }) => (
     <div
+      key={song_id}
       onClick={() =>
         navigate(`songquiz`, {
           state: {
             songNum: song_id,
-            albumId: album_id,
+            albumNum: album_id,
+            numOfSongs,
           },
         })
       }
@@ -56,6 +58,7 @@ export const AlbumsOptions = ({ numOfSongs }) => {
                       state: {
                         songNum: songArray[getRandomInt(songArray.length)],
                         numOfSongs,
+                        albumNum,
                       },
                     });
                   })
