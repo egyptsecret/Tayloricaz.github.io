@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import classes from "./SongQuiz.module.css";
-import { Loader } from "../../components/Loader";
-import { getLyricsBySongNumber } from "../../requests";
 import {
   formatLyricsForDisplay,
   getRandomInt,
@@ -9,7 +7,7 @@ import {
   mapIndexed,
 } from "../../functions";
 import { WordCell } from "./WordCell";
-import { filter, map, overSome, prop } from "lodash/fp";
+import { equals, filter, map, overSome, pipe, prop, find } from "lodash/fp";
 import { useLocation, useNavigate } from "react-router";
 import taylorHoldingCats from "../../assets/images/taylorHoldingCats.png";
 import loverHouse from "../../assets/images/loverHouse.jpg";
@@ -17,29 +15,23 @@ import { PurpleButton } from "../../components/PurpleButton";
 import { ErrorInFetchingSong } from "../../components/ErrorInFetchingSong";
 import { Timer } from "../../components/Timer";
 import { Link } from "react-router-dom";
+import allLyrics from "../../lyrics.json";
 
 export const SongQuiz = () => {
-  const [songInfo, setSongInfo] = useState();
+  const { state } = useLocation();
   const [wordGuess, setWordGuess] = useState("");
-  const [isFetchingLyrics, setIsFetchingLyrics] = useState(true);
-  const [lyricsProps, setLyricsProps] = useState();
+  const [lyricsProps, setLyricsProps] = useState(
+    formatLyricsForDisplay(
+      find(pipe(prop("song_id"), equals(state.songNum)), allLyrics)?.lyrics
+    )
+  );
   const [gaveUp, setGaveUp] = useState(false);
   const [restartTimer, setRestartTimer] = useState(false);
   const navigate = useNavigate();
-  const { state } = useLocation();
   const lyricsGuessed = filter(
     overSome(prop("isVisible"), !prop("losingWord")),
     lyricsProps
   )?.length;
-
-  useEffect(() => {
-    state &&
-      getLyricsBySongNumber(state.songNum).then((songJson) => {
-        setSongInfo(songJson);
-        setLyricsProps(formatLyricsForDisplay(songJson.lyrics));
-        setIsFetchingLyrics(false);
-      });
-  }, [state]);
 
   const updateWordDisplay = (event) => setWordGuess(event.target.value);
   const wordsTable = useMemo(
@@ -51,18 +43,17 @@ export const SongQuiz = () => {
     [lyricsProps]
   );
   useEffect(() => {
-    !isFetchingLyrics &&
-      setLyricsProps((prevValue) =>
-        map(({ word, isVisible, losingWord }) => {
-          if (!isVisible && isWordGuessed(wordGuess, word)) {
-            setWordGuess("");
-            return { word, isVisible: true, losingWord };
-          } else {
-            return { word, isVisible, losingWord };
-          }
-        }, prevValue)
-      );
-  }, [wordGuess, songInfo, isFetchingLyrics]);
+    setLyricsProps((prevValue) =>
+      map(({ word, isVisible, losingWord }) => {
+        if (!isVisible && isWordGuessed(wordGuess, word)) {
+          setWordGuess("");
+          return { word, isVisible: true, losingWord };
+        } else {
+          return { word, isVisible, losingWord };
+        }
+      }, prevValue)
+    );
+  }, [wordGuess]);
 
   const regenerateSong = () => {
     setRestartTimer((prevValue) => !prevValue);
@@ -83,6 +74,7 @@ export const SongQuiz = () => {
       )
     );
   };
+
   return (
     <div className={classes.App}>
       <Link to="/">
@@ -99,11 +91,6 @@ export const SongQuiz = () => {
         type="text"
         placeholder="put a word in bitch!"
       ></input>
-      {isFetchingLyrics && (
-        <div className="fixed top-56">
-          <Loader />
-        </div>
-      )}
       {lyricsProps?.length ? (
         lyricsGuessed !== lyricsProps?.length || gaveUp ? (
           <>
@@ -131,7 +118,7 @@ export const SongQuiz = () => {
           </div>
         )
       ) : (
-        !isFetchingLyrics && <ErrorInFetchingSong />
+        <ErrorInFetchingSong />
       )}
       <div className="fixed bottom-0 right-0 flex items-center">
         <PurpleButton onClick={regenerateSong}>regenerate song</PurpleButton>
