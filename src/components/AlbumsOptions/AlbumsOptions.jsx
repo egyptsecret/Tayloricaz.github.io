@@ -1,25 +1,12 @@
-import { equals, find, first, flatMap, map, pipe, prop } from "lodash/fp";
+import { equals, find, flatMap, map, pipe, prop } from "lodash/fp";
 import { useNavigate } from "react-router-dom";
 import { getAllSongsInAlbum } from "../../requests";
 import { getRandomInt } from "../../functions";
-import { useEffect, useState } from "react";
 import { albumsArray } from "./constants";
+import songsInAlbums from "../../songsInAlbums.json";
 
 export const AlbumsOptions = ({ numOfSongs }) => {
-  const [albumOption, setAlbumOption] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    Promise.all(
-      map(
-        ({ albumNum }) =>
-          getAllSongsInAlbum(albumNum).then((res) =>
-            setAlbumOption((preVal) => [...preVal, [res]])
-          ),
-        albumsArray
-      )
-    );
-  }, []);
 
   const AlbumSongOption = ({ song_id, title, album_id }) => (
     <div
@@ -67,10 +54,7 @@ export const AlbumsOptions = ({ numOfSongs }) => {
               <div className="grid divide-y ">
                 {flatMap(
                   map(AlbumSongOption),
-                  find(
-                    pipe(first, first, prop("album_id"), equals(albumNum)),
-                    albumOption
-                  )
+                  find(pipe(prop("album_id"), equals(albumNum)), songsInAlbums)
                 )}
               </div>
             </div>
