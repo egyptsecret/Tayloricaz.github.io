@@ -235,5 +235,25 @@
   { "song_id": 174, "title": "That's When", "album_id": 3 },
   { "song_id": 175, "title": "Bye Bye Baby", "album_id": 3 },
   { "song_id": 176, "title": "Hits Different", "album_id": 10 },
-  { "song_id": 177, "title": "You're Losing Me", "album_id": 10 }
+  { "song_id": 177, "title": "You're Losing Me", "album_id": 10 },
+  {
+    "song_id": 178,
+    "title": "This love (Taylor's version)",
+    "album_id": 1
+  },
+  {
+    "song_id": 179,
+    "title": "Wildest Dreams (Taylor's version)",
+    "album_id": 1
+  },
+  {
+    "song_id": 180,
+    "title": "I can see you (Taylor's version) (From the vault)",
+    "album_id": 4
+  },
+  {
+    "song_id": 181,
+    "title": "Castles Crumbling (Taylor's version) (From the vault)",
+    "album_id": 4
+  }
 ]
