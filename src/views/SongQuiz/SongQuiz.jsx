@@ -91,15 +91,15 @@ export const SongQuiz = () => {
         type="text"
         placeholder="put a word in bitch!"
       ></input>
+      <div className="self-start w-2/4">
+        <Timer
+          stopTimer={gaveUp || lyricsGuessed === lyricsProps?.length}
+          restartTimer={restartTimer}
+        />
+      </div>
       {lyricsProps?.length ? (
         lyricsGuessed !== lyricsProps?.length || gaveUp ? (
           <>
-            <div className="self-start w-2/4">
-              <Timer
-                stopTimer={gaveUp || lyricsGuessed === lyricsProps?.length}
-                restartTimer={restartTimer}
-              />
-            </div>
             <div className="font-playfair">
               you guessed {lyricsGuessed} lyrics out of {lyricsProps?.length}
             </div>
